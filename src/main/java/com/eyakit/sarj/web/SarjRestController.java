@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.eyakit.sarj.exception.InternalServerException;
 import com.eyakit.sarj.exception.UserNotFoundException;
+import com.eyakit.sarj.model.Brand;
 import com.eyakit.sarj.model.User;
 import com.eyakit.sarj.service.SarjService;
 
@@ -36,8 +37,7 @@ public class SarjRestController {
 		return ResponseEntity.ok(users);
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/user/{id}"
-			)
+	@RequestMapping(method = RequestMethod.GET, value = "/user/{id}")
 	public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
 		try {
 			User user = sarjService.findUser(id);
@@ -97,13 +97,55 @@ public class SarjRestController {
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/user/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteOwner(@PathVariable("id") Long id) {
+	public void deleteUser(@PathVariable("id") Long id) {
 		try {
 			sarjService.deleteUser(id);
 		} catch (UserNotFoundException ex) {
 			throw ex;
 		} catch (Exception ex) {
 			throw new InternalServerException(ex);
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/brands")
+	public ResponseEntity<List<Brand>> getBrands() {
+		List<Brand> brands = sarjService.findBrands();
+		return ResponseEntity.ok(brands);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/brand/{id}")
+	public ResponseEntity<?> getBrand(@PathVariable("id") Long id) {
+		try {
+			Brand brand = sarjService.findBrand(id);
+			return ResponseEntity.ok(brand);
+		} catch (UserNotFoundException ex) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/brand")
+	public ResponseEntity<URI> createBrand(@RequestBody Brand brand) {
+		try {
+			sarjService.createBrand(brand);
+			Long id = brand.getId();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
+			return ResponseEntity.created(location).build();
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/brand/{id}")
+	public ResponseEntity<?> updateBrand(@PathVariable("id") Long id, @RequestBody Brand brandRequest) {
+		try {
+			Brand brand = sarjService.findBrand(id);
+			brand.setName(brandRequest.getName());
+			sarjService.updateBrand(brand);
+			return ResponseEntity.ok().build();
+		} catch (UserNotFoundException ex) {
+			return ResponseEntity.notFound().build();
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 }

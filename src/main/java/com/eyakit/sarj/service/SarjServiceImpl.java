@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eyakit.sarj.dao.BrandRepository;
 import com.eyakit.sarj.dao.CarRepository;
 import com.eyakit.sarj.dao.UserRepository;
 import com.eyakit.sarj.exception.UserNotFoundException;
+import com.eyakit.sarj.model.Brand;
 import com.eyakit.sarj.model.User;
 
 @Service
@@ -17,8 +19,8 @@ import com.eyakit.sarj.model.User;
 public class SarjServiceImpl implements SarjService {
 	
 	private UserRepository userRepository;
-	
 	private CarRepository carRepository;
+	private BrandRepository brandRepository;
 	
 	@Autowired
 	public void setUserRepository(UserRepository userRepository) {
@@ -28,6 +30,11 @@ public class SarjServiceImpl implements SarjService {
 	@Autowired
 	public void setCarRepository(CarRepository carRepository) {
 		this.carRepository = carRepository;
+	}
+	
+	@Autowired
+	public void setBrandRepository(BrandRepository brandRepository) {
+		this.brandRepository = brandRepository;
 	}
 
 	@Override
@@ -67,6 +74,33 @@ public class SarjServiceImpl implements SarjService {
 		carRepository.deleteByUserId(id);
 		userRepository.delete(id);
 		//if(true) throw new RuntimeException("testing rollback...");
+	}
+
+	@Override
+	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+	public Brand findBrand(Long id) throws UserNotFoundException {
+		Brand brand = brandRepository.findById(id);
+		if(brand == null) {
+			throw new UserNotFoundException("Brand not found with id :" + id);
+		}
+		return brand;
+	}
+
+	@Override
+	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+	public List<Brand> findBrands() {
+		return brandRepository.findAll();
+	}
+
+	@Override
+	public void createBrand(Brand brand) {
+		brandRepository.create(brand);
+		
+	}
+
+	@Override
+	public void updateBrand(Brand brand) {
+		brandRepository.update(brand);
 	}
 
 }

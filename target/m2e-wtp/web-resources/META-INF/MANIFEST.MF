@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
-Built-By: elit
-Build-Jdk: 9.0.1
 Implementation-Title: sarj
 Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: hasan.yelaldi
 Implementation-Vendor-Id: com.eyakit
+Build-Jdk: 1.8.0_92
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
  ot-starter-parent/sarj
 Created-By: Maven Integration for Eclipse

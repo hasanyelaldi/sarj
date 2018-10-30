@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -21,15 +22,23 @@ public class Car {
 	private Long id;
 	@Column(name="name")
 	private String name;
-	@Column(name="birth_date")
-	private Date birthDate;
+	@Column(name="year")
+	private String year;
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
-	
+	@OneToOne
+	@JoinColumn(name="brand_id")
+	private Brand brand;
 	
 	public Long getId() {
 		return id;
+	}
+	public Brand getBrand() {
+		return brand;
+	}
+	public void setBrand(Brand brand) {
+		this.brand = brand;
 	}
 	public void setId(Long id) {
 		this.id = id;
@@ -40,16 +49,18 @@ public class Car {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getBirthDate() {
-		return birthDate;
+	public String getYear() {
+		return year;
 	}
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
+	public void setYear(String year) {
+		this.year = year;
 	}
+	
 	@Override
 	public String toString() {
-		return "Car [id=" + id + ", name=" + name + ", birthDate=" + birthDate + ", user=" + user + "]";
+		return "Car [id=" + id + ", name=" + name + ", year=" + year + ", brand=" + brand + "]";
 	}
+	
 	
 	
 }
